@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-function ModalWindow({isOpen, onUpdateIsOpen, tasks, handleUpdateTaskList}) {
-    const[newTitle, setNewTitle] = useState('');
-    const[newTask, setNewTask] = useState('');
-    const[newTagArr, setNewTagArr] = useState('');
+function ModalWindow({isOpen, onUpdateIsOpen}) {
+    const[newTitle, setNewTitle] = useState("");
+    const[newTask, setNewTask] = useState("");
+    const[newTagArr, setNewTagArr] = useState("");
+
+    const storedData = localStorage.getItem('taskList');
+    let tasks = storedData ? JSON.parse(storedData) : [];
     
     const toastOptions = {
       position: "bottom-left",
@@ -30,14 +33,19 @@ function ModalWindow({isOpen, onUpdateIsOpen, tasks, handleUpdateTaskList}) {
       setNewTagArr(event.target.value)
     }
   
-    const closeModal = () => {
+    const closeModal = async() => {
+      await setNewTask('');
+      await setNewTitle('');
+      await setNewTagArr('');
       onUpdateIsOpen(false);
     }
     
     const AddTask = async() => { 
   
       try { 
-        await handleUpdateTaskList([...tasks, {id: tasks.length+1, title: newTitle, description: newTask, tagList: newTagArr.length === 0 ? newTagArr : newTagArr.split(",")}]);
+        const dataToStore = JSON.stringify([...tasks, {id: tasks.length+1, title: newTitle, description: newTask, tagList: newTagArr.length === 0 ? newTagArr : newTagArr.split(",")}]);
+        await localStorage.setItem('taskList', dataToStore);
+
         await setNewTask('');
         await setNewTitle('');
         await setNewTagArr('');

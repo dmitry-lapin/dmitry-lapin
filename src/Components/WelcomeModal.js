@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function WelcomeModal({ welcomeIsOpen, onClose, name, handleUpdateName }) {
+function WelcomeModal({ welcomeIsOpen, onClose}) {
     const[newName, setNewName] = useState('');
     
     if (!welcomeIsOpen) {
@@ -12,13 +12,13 @@ function WelcomeModal({ welcomeIsOpen, onClose, name, handleUpdateName }) {
     }
   
     const CancelName = async() => {
-      await handleUpdateName('Inkognito');
+      await localStorage.setItem('userName', JSON.stringify('Inkognito'));
       await setNewName('');
       await onClose();
     }
   
     const SaveName = async() => {
-      await handleUpdateName(newName);
+      await localStorage.setItem('userName', JSON.stringify(newName));
       await setNewName('');
       await onClose();
     }
